@@ -1,0 +1,1688 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <meta name="description" content="AI-Powered Personalized Trip Planner with INR Support" />
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Material-UI Icons -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    
+    <!-- Custom CSS -->
+    <style>
+        /* Reset and Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+                'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            background-color: #f8fafc;
+            color: #1a202c;
+            line-height: 1.6;
+        }
+
+        /* App Container */
+        #root {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header Styles */
+        .app-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            text-decoration: none;
+            color: white;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-menu a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: opacity 0.3s ease;
+        }
+
+        .nav-menu a:hover {
+            opacity: 0.8;
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        /* Card Styles */
+        .card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid #e2e8f0;
+        }
+
+        .card-header {
+            margin-bottom: 1.5rem;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 0.5rem;
+        }
+
+        .card-subtitle {
+            color: #718096;
+            font-size: 0.9rem;
+        }
+
+        /* Button Styles */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            gap: 0.5rem;
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #e2e8f0;
+            color: #4a5568;
+        }
+
+        .btn-secondary:hover:not(:disabled) {
+            background: #cbd5e0;
+        }
+
+        .btn-success {
+            background: #48bb78;
+            color: white;
+        }
+
+        .btn-success:hover:not(:disabled) {
+            background: #38a169;
+        }
+
+        .btn-danger {
+            background: #f56565;
+            color: white;
+        }
+
+        .btn-danger:hover:not(:disabled) {
+            background: #e53e3e;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid #667eea;
+            color: #667eea;
+        }
+
+        .btn-outline:hover:not(:disabled) {
+            background: #667eea;
+            color: white;
+        }
+
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #4a5568;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-input.error {
+            border-color: #f56565;
+        }
+
+        .form-select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            background: white;
+            cursor: pointer;
+        }
+
+        .form-textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        /* Grid Layout */
+        .grid {
+            display: grid;
+            gap: 2rem;
+        }
+
+        .grid-2 {
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        }
+
+        .grid-3 {
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        }
+
+        .grid-4 {
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        }
+
+        /* Flexbox Utilities */
+        .flex {
+            display: flex;
+        }
+
+        .flex-col {
+            flex-direction: column;
+        }
+
+        .items-center {
+            align-items: center;
+        }
+
+        .justify-center {
+            justify-content: center;
+        }
+
+        .justify-between {
+            justify-content: space-between;
+        }
+
+        .gap-2 {
+            gap: 0.5rem;
+        }
+
+        .gap-4 {
+            gap: 1rem;
+        }
+
+        .gap-6 {
+            gap: 1.5rem;
+        }
+
+        /* Spacing */
+        .mb-2 { margin-bottom: 0.5rem; }
+        .mb-4 { margin-bottom: 1rem; }
+        .mb-6 { margin-bottom: 1.5rem; }
+        .mb-8 { margin-bottom: 2rem; }
+
+        .mt-2 { margin-top: 0.5rem; }
+        .mt-4 { margin-top: 1rem; }
+        .mt-6 { margin-top: 1.5rem; }
+        .mt-8 { margin-top: 2rem; }
+
+        .p-2 { padding: 0.5rem; }
+        .p-4 { padding: 1rem; }
+        .p-6 { padding: 1.5rem; }
+        .p-8 { padding: 2rem; }
+
+        /* Text Styles */
+        .text-center { text-align: center; }
+        .text-left { text-align: left; }
+        .text-right { text-align: right; }
+
+        .text-sm { font-size: 0.875rem; }
+        .text-base { font-size: 1rem; }
+        .text-lg { font-size: 1.125rem; }
+        .text-xl { font-size: 1.25rem; }
+        .text-2xl { font-size: 1.5rem; }
+        .text-3xl { font-size: 1.875rem; }
+
+        .font-light { font-weight: 300; }
+        .font-normal { font-weight: 400; }
+        .font-medium { font-weight: 500; }
+        .font-semibold { font-weight: 600; }
+        .font-bold { font-weight: 700; }
+
+        .text-gray-500 { color: #718096; }
+        .text-gray-600 { color: #4a5568; }
+        .text-gray-700 { color: #2d3748; }
+        .text-gray-800 { color: #1a202c; }
+
+        /* Alert Styles */
+        .alert {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            border: 1px solid;
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1001;
+            min-width: 300px;
+            animation: slideInRight 0.3s ease-out;
+        }
+
+        @keyframes slideInRight {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        .alert-success {
+            background: #f0fff4;
+            border-color: #9ae6b4;
+            color: #22543d;
+        }
+
+        .alert-error {
+            background: #fed7d7;
+            border-color: #feb2b2;
+            color: #742a2a;
+        }
+
+        .alert-warning {
+            background: #fefcbf;
+            border-color: #f6e05e;
+            color: #744210;
+        }
+
+        .alert-info {
+            background: #ebf8ff;
+            border-color: #90cdf4;
+            color: #2a4365;
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: modalSlideIn 0.3s ease-out;
+        }
+
+        @keyframes modalSlideIn {
+            from { transform: scale(0.9); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #718096;
+            padding: 0.5rem;
+        }
+
+        .modal-close:hover {
+            color: #4a5568;
+        }
+
+        /* Trip Planner Specific Styles */
+        .trip-planner {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 3rem 2rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+        }
+
+        .trip-planner h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .trip-planner p {
+            font-size: 1.125rem;
+            text-align: center;
+            opacity: 0.9;
+            margin-bottom: 2rem;
+        }
+
+        .step-indicator {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+
+        .step {
+            display: flex;
+            align-items: center;
+            margin: 0 1rem;
+        }
+
+        .step-number {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            margin-right: 0.5rem;
+        }
+
+        .step.active .step-number {
+            background: white;
+            color: #667eea;
+        }
+
+        .step.completed .step-number {
+            background: #48bb78;
+            color: white;
+        }
+
+        /* Itinerary Card Styles */
+        .itinerary-card {
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .itinerary-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .itinerary-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1.5rem;
+        }
+
+        .itinerary-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .itinerary-meta {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .itinerary-body {
+            padding: 1.5rem;
+        }
+
+        .day-card {
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .day-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .day-title {
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        .day-theme {
+            background: #667eea;
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+        }
+
+        .activity-list {
+            list-style: none;
+        }
+
+        .activity-item {
+            padding: 0.75rem;
+            border-left: 3px solid #667eea;
+            background: #f7fafc;
+            margin-bottom: 0.5rem;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .activity-time {
+            font-weight: 600;
+            color: #667eea;
+            font-size: 0.9rem;
+        }
+
+        .activity-name {
+            font-weight: 500;
+            color: #2d3748;
+            margin: 0.25rem 0;
+        }
+
+        .activity-description {
+            color: #718096;
+            font-size: 0.9rem;
+        }
+
+        /* Feature Cards */
+        .feature-card {
+            text-align: center;
+            padding: 2rem;
+            border-radius: 12px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-card h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 1rem;
+        }
+
+        .feature-card p {
+            color: #718096;
+            line-height: 1.6;
+        }
+
+        /* Footer */
+        .app-footer {
+            background: #2d3748;
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer-links {
+            margin-top: 1rem;
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+        }
+
+        .footer-links a {
+            color: white;
+            text-decoration: none;
+            opacity: 0.8;
+        }
+
+        .footer-links a:hover {
+            opacity: 1;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .nav-menu {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .main-content {
+                padding: 1rem;
+            }
+            
+            .trip-planner h1 {
+                font-size: 2rem;
+            }
+            
+            .step {
+                margin: 0 0.5rem;
+            }
+            
+            .step-number {
+                width: 30px;
+                height: 30px;
+                font-size: 0.9rem;
+            }
+            
+            .grid-2,
+            .grid-3,
+            .grid-4 {
+                grid-template-columns: 1fr;
+            }
+
+            .alert {
+                right: 10px;
+                left: 10px;
+                min-width: auto;
+            }
+        }
+
+        /* Animation Classes */
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .slide-in {
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(-100%); }
+            to { transform: translateX(0); }
+        }
+
+        /* Utility Classes */
+        .hidden { display: none !important; }
+        .visible { display: block !important; }
+
+        .w-full { width: 100%; }
+        .h-full { height: 100%; }
+
+        .rounded { border-radius: 8px; }
+        .rounded-lg { border-radius: 12px; }
+        .rounded-full { border-radius: 50%; }
+
+        .shadow { box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05); }
+        .shadow-lg { box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1); }
+
+        .border { border: 1px solid #e2e8f0; }
+        .border-t { border-top: 1px solid #e2e8f0; }
+        .border-b { border-bottom: 1px solid #e2e8f0; }
+        .border-l { border-left: 1px solid #e2e8f0; }
+        .border-r { border-right: 1px solid #e2e8f0; }
+
+        /* Print Styles */
+        @media print {
+            .no-print {
+                display: none !important;
+            }
+            
+            .itinerary-card {
+                break-inside: avoid;
+                box-shadow: none;
+                border: 1px solid #000;
+            }
+        }
+    </style>
+    
+    <title>AI Trip Planner - Personalized Travel Planning</title>
+</head>
+<body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    
+    <!-- Main App Container -->
+    <div id="root">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-content">
+                <a href="/" class="logo">🌍 AI Trip Planner</a>
+                <nav>
+                    <ul class="nav-menu">
+                        <li><a href="#home">Home</a></li>
+                        <li><a href="#planner">Plan Trip</a></li>
+                        <li><a href="#features">Features</a></li>
+                        <li><a href="#about">About</a></li>
+                    </ul>
+                </nav>
+                <div class="auth-buttons">
+                    <button id="loginBtn" class="btn btn-outline">Login</button>
+                    <button id="registerBtn" class="btn btn-primary">Register</button>
+                    <button id="logoutBtn" class="btn btn-secondary hidden">Logout</button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Hero Section -->
+            <section id="home" class="trip-planner">
+                <h1>Plan Your Perfect Trip with AI</h1>
+                <p>Get personalized itineraries tailored to your interests, budget, and preferences</p>
+                
+                <!-- Trip Planning Form -->
+                <div class="trip-form">
+                    <!-- Step Indicator -->
+                    <div class="step-indicator">
+                        <div class="step active">
+                            <div class="step-number">1</div>
+                            <span>Destination & Dates</span>
+                        </div>
+                        <div class="step">
+                            <div class="step-number">2</div>
+                            <span>Interests</span>
+                        </div>
+                        <div class="step">
+                            <div class="step-number">3</div>
+                            <span>Budget & Group</span>
+                        </div>
+                    </div>
+
+                    <!-- Step 1: Destination and Dates -->
+                    <div class="step-content">
+                        <div class="grid grid-2">
+                            <div class="form-group">
+                                <label class="form-label" for="destination">Destination</label>
+                                <select class="form-select" id="destination" required>
+                                    <option value="">Select Destination</option>
+                                    <option value="Goa">Goa</option>
+                                    <option value="Kerala">Kerala</option>
+                                    <option value="Rajasthan">Rajasthan</option>
+                                    <option value="Himachal Pradesh">Himachal Pradesh</option>
+                                    <option value="Karnataka">Karnataka</option>
+                                    <option value="Tamil Nadu">Tamil Nadu</option>
+                                    <option value="Maharashtra">Maharashtra</option>
+                                    <option value="Uttarakhand">Uttarakhand</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="duration">Duration (Days)</label>
+                                <input type="number" class="form-input" id="duration" min="1" max="30" value="3" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="startDate">Start Date</label>
+                                <input type="date" class="form-input" id="startDate" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="endDate">End Date</label>
+                                <input type="date" class="form-input" id="endDate" required>
+                            </div>
+                        </div>
+                        <div class="flex justify-between mt-6">
+                            <button class="btn btn-secondary" id="prevBtn" disabled>Previous</button>
+                            <button class="btn btn-primary" id="nextBtn">Next</button>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Interests -->
+                    <div class="step-content hidden">
+                        <div class="form-group">
+                            <label class="form-label">Select Your Interests</label>
+                            <div class="grid grid-3">
+                                <label class="flex items-center">
+                                    <input type="checkbox" name="interests" value="Beaches" class="mr-2">
+                                    <span>Beaches</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" name="interests" value="Mountains" class="mr-2">
+                                    <span>Mountains</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" name="interests" value="Culture" class="mr-2">
+                                    <span>Culture</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" name="interests" value="Adventure" class="mr-2">
+                                    <span>Adventure</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" name="interests" value="Food" class="mr-2">
+                                    <span>Food</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" name="interests" value="Nightlife" class="mr-2">
+                                    <span>Nightlife</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" name="interests" value="Wildlife" class="mr-2">
+                                    <span>Wildlife</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" name="interests" value="Spiritual" class="mr-2">
+                                    <span>Spiritual</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" name="interests" value="Shopping" class="mr-2">
+                                    <span>Shopping</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="flex justify-between mt-6">
+                            <button class="btn btn-secondary" id="prevBtn">Previous</button>
+                            <button class="btn btn-primary" id="nextBtn">Next</button>
+                        </div>
+                    </div>
+
+                    <!-- Step 3: Budget and Group -->
+                    <div class="step-content hidden">
+                        <div class="grid grid-2">
+                            <div class="form-group">
+                                <label class="form-label" for="budget">Budget (₹)</label>
+                                <input type="number" class="form-input" id="budget" min="1000" value="50000" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="groupSize">Group Size</label>
+                                <input type="number" class="form-input" id="groupSize" min="1" max="20" value="2" required>
+                            </div>
+                        </div>
+                        <div class="flex justify-between mt-6">
+                            <button class="btn btn-secondary" id="prevBtn">Previous</button>
+                            <button class="btn btn-primary" id="generateBtn">Generate Itinerary</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Features Section -->
+            <section id="features" class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Why Choose AI Trip Planner?</h2>
+                    <p class="card-subtitle">Experience the future of travel planning</p>
+                </div>
+                <div class="grid grid-3">
+                    <div class="feature-card">
+                        <div class="feature-icon">🤖</div>
+                        <h3>AI-Powered</h3>
+                        <p>Advanced AI algorithms create personalized itineraries based on your preferences</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">💰</div>
+                        <h3>Budget-Friendly</h3>
+                        <p>Get the best value for your money with optimized pricing and recommendations</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🌍</div>
+                        <h3>Local Insights</h3>
+                        <p>Discover hidden gems and local experiences that tourists often miss</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Generated Itinerary Section -->
+            <section id="itinerary" class="hidden">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Your Personalized Itinerary</h2>
+                        <p class="card-subtitle">Generated just for you</p>
+                    </div>
+                    <div id="itineraryContainer">
+                        <!-- Itinerary will be populated here -->
+                    </div>
+                    <div class="flex justify-center gap-4 mt-6">
+                        <button class="btn btn-success" id="saveBtn">Save Itinerary</button>
+                        <button class="btn btn-outline" id="shareBtn">Share</button>
+                        <button class="btn btn-primary" id="bookBtn">Book Now</button>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="app-footer">
+            <div class="footer-content">
+                <p>&copy; 2024 AI Trip Planner. All rights reserved.</p>
+                <div class="footer-links">
+                    <a href="#privacy">Privacy Policy</a>
+                    <a href="#terms">Terms of Service</a>
+                    <a href="#contact">Contact Us</a>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal-overlay hidden">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">Login</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label class="form-label" for="loginEmail">Email</label>
+                    <input type="email" class="form-input" id="loginEmail" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="loginPassword">Password</label>
+                    <input type="password" class="form-input" id="loginPassword" required>
+                </div>
+                <button type="submit" class="btn btn-primary w-full">Login</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Register Modal -->
+    <div id="registerModal" class="modal-overlay hidden">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">Register</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <form id="registerForm">
+                <div class="form-group">
+                    <label class="form-label" for="registerName">Full Name</label>
+                    <input type="text" class="form-input" id="registerName" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="registerEmail">Email</label>
+                    <input type="email" class="form-input" id="registerEmail" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="registerPassword">Password</label>
+                    <input type="password" class="form-input" id="registerPassword" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="confirmPassword">Confirm Password</label>
+                    <input type="password" class="form-input" id="confirmPassword" required>
+                </div>
+                <button type="submit" class="btn btn-primary w-full">Register</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Alert Container -->
+    <div id="alertContainer"></div>
+
+    <!-- Custom JavaScript -->
+    <script>
+        // Main Application JavaScript
+        class TripPlannerApp {
+            constructor() {
+                this.currentStep = 1;
+                this.totalSteps = 3;
+                this.tripData = {
+                    destination: '',
+                    duration: 3,
+                    interests: [],
+                    budget: 50000,
+                    groupSize: 2,
+                    startDate: '',
+                    endDate: ''
+                };
+                this.generatedItinerary = null;
+                
+                this.init();
+            }
+
+            init() {
+                this.setupEventListeners();
+                this.updateStepIndicator();
+                this.setupFormValidation();
+                this.setupDateValidation();
+                this.updateAuthButtons();
+            }
+
+            setupEventListeners() {
+                // Navigation buttons
+                const nextBtns = document.querySelectorAll('#nextBtn');
+                const prevBtns = document.querySelectorAll('#prevBtn');
+                const generateBtn = document.getElementById('generateBtn');
+                const saveBtn = document.getElementById('saveBtn');
+                const shareBtn = document.getElementById('shareBtn');
+                const bookBtn = document.getElementById('bookBtn');
+
+                nextBtns.forEach(btn => btn.addEventListener('click', () => this.nextStep()));
+                prevBtns.forEach(btn => btn.addEventListener('click', () => this.prevStep()));
+                if (generateBtn) generateBtn.addEventListener('click', () => this.generateItinerary());
+                if (saveBtn) saveBtn.addEventListener('click', () => this.saveItinerary());
+                if (shareBtn) shareBtn.addEventListener('click', () => this.shareItinerary());
+                if (bookBtn) bookBtn.addEventListener('click', () => this.bookItinerary());
+
+                // Form inputs
+                const destinationInput = document.getElementById('destination');
+                const durationInput = document.getElementById('duration');
+                const budgetInput = document.getElementById('budget');
+                const groupSizeInput = document.getElementById('groupSize');
+                const startDateInput = document.getElementById('startDate');
+                const endDateInput = document.getElementById('endDate');
+
+                if (destinationInput) destinationInput.addEventListener('change', (e) => this.updateTripData('destination', e.target.value));
+                if (durationInput) durationInput.addEventListener('change', (e) => this.updateTripData('duration', parseInt(e.target.value)));
+                if (budgetInput) budgetInput.addEventListener('change', (e) => this.updateTripData('budget', parseInt(e.target.value)));
+                if (groupSizeInput) groupSizeInput.addEventListener('change', (e) => this.updateTripData('groupSize', parseInt(e.target.value)));
+                if (startDateInput) startDateInput.addEventListener('change', (e) => this.updateTripData('startDate', e.target.value));
+                if (endDateInput) endDateInput.addEventListener('change', (e) => this.updateTripData('endDate', e.target.value));
+
+                // Interest checkboxes
+                const interestCheckboxes = document.querySelectorAll('input[name="interests"]');
+                interestCheckboxes.forEach(checkbox => {
+                    checkbox.addEventListener('change', (e) => this.toggleInterest(e.target.value, e.target.checked));
+                });
+
+                // Authentication buttons
+                const loginBtn = document.getElementById('loginBtn');
+                const registerBtn = document.getElementById('registerBtn');
+                const logoutBtn = document.getElementById('logoutBtn');
+
+                if (loginBtn) loginBtn.addEventListener('click', () => this.showLoginModal());
+                if (registerBtn) registerBtn.addEventListener('click', () => this.showRegisterModal());
+                if (logoutBtn) logoutBtn.addEventListener('click', () => this.logout());
+
+                // Modal close buttons
+                const modalCloseBtns = document.querySelectorAll('.modal-close');
+                modalCloseBtns.forEach(btn => {
+                    btn.addEventListener('click', () => this.closeModal());
+                });
+
+                // Form submissions
+                const loginForm = document.getElementById('loginForm');
+                const registerForm = document.getElementById('registerForm');
+
+                if (loginForm) loginForm.addEventListener('submit', (e) => this.handleLogin(e));
+                if (registerForm) registerForm.addEventListener('submit', (e) => this.handleRegister(e));
+
+                // Close modal when clicking outside
+                const modals = document.querySelectorAll('.modal-overlay');
+                modals.forEach(modal => {
+                    modal.addEventListener('click', (e) => {
+                        if (e.target === modal) {
+                            this.closeModal();
+                        }
+                    });
+                });
+            }
+
+            setupFormValidation() {
+                const forms = document.querySelectorAll('form');
+                forms.forEach(form => {
+                    form.addEventListener('submit', (e) => {
+                        e.preventDefault();
+                        this.validateForm(form);
+                    });
+                });
+            }
+
+            setupDateValidation() {
+                const startDateInput = document.getElementById('startDate');
+                const endDateInput = document.getElementById('endDate');
+                const durationInput = document.getElementById('duration');
+
+                if (startDateInput && endDateInput && durationInput) {
+                    startDateInput.addEventListener('change', () => this.updateEndDate());
+                    durationInput.addEventListener('change', () => this.updateEndDate());
+                }
+            }
+
+            updateEndDate() {
+                const startDate = document.getElementById('startDate').value;
+                const duration = parseInt(document.getElementById('duration').value);
+                
+                if (startDate && duration) {
+                    const start = new Date(startDate);
+                    const end = new Date(start);
+                    end.setDate(start.getDate() + duration - 1);
+                    
+                    const endDateInput = document.getElementById('endDate');
+                    endDateInput.value = end.toISOString().split('T')[0];
+                    endDateInput.min = startDate;
+                }
+            }
+
+            updateStepIndicator() {
+                const steps = document.querySelectorAll('.step');
+                steps.forEach((step, index) => {
+                    step.classList.remove('active', 'completed');
+                    if (index + 1 < this.currentStep) {
+                        step.classList.add('completed');
+                    } else if (index + 1 === this.currentStep) {
+                        step.classList.add('active');
+                    }
+                });
+            }
+
+            nextStep() {
+                if (this.validateCurrentStep()) {
+                    if (this.currentStep < this.totalSteps) {
+                        this.currentStep++;
+                        this.showStep(this.currentStep);
+                        this.updateStepIndicator();
+                    }
+                }
+            }
+
+            prevStep() {
+                if (this.currentStep > 1) {
+                    this.currentStep--;
+                    this.showStep(this.currentStep);
+                    this.updateStepIndicator();
+                }
+            }
+
+            showStep(stepNumber) {
+                const steps = document.querySelectorAll('.step-content');
+                steps.forEach((step, index) => {
+                    step.classList.toggle('hidden', index + 1 !== stepNumber);
+                });
+            }
+
+            validateCurrentStep() {
+                switch (this.currentStep) {
+                    case 1:
+                        return this.validateStep1();
+                    case 2:
+                        return this.validateStep2();
+                    case 3:
+                        return this.validateStep3();
+                    default:
+                        return true;
+                }
+            }
+
+            validateStep1() {
+                const destination = document.getElementById('destination').value;
+                const duration = document.getElementById('duration').value;
+                const startDate = document.getElementById('startDate').value;
+                const endDate = document.getElementById('endDate').value;
+
+                if (!destination) {
+                    this.showAlert('Please select a destination', 'error');
+                    return false;
+                }
+                if (!duration || duration < 1) {
+                    this.showAlert('Please enter a valid duration', 'error');
+                    return false;
+                }
+                if (!startDate) {
+                    this.showAlert('Please select a start date', 'error');
+                    return false;
+                }
+                if (!endDate) {
+                    this.showAlert('Please select an end date', 'error');
+                    return false;
+                }
+
+                return true;
+            }
+
+            validateStep2() {
+                const interests = document.querySelectorAll('input[name="interests"]:checked');
+                if (interests.length === 0) {
+                    this.showAlert('Please select at least one interest', 'error');
+                    return false;
+                }
+                return true;
+            }
+
+            validateStep3() {
+                const budget = document.getElementById('budget').value;
+                const groupSize = document.getElementById('groupSize').value;
+
+                if (!budget || budget < 1000) {
+                    this.showAlert('Please enter a valid budget (minimum ₹1,000)', 'error');
+                    return false;
+                }
+                if (!groupSize || groupSize < 1) {
+                    this.showAlert('Please enter a valid group size', 'error');
+                    return false;
+                }
+                return true;
+            }
+
+            updateTripData(key, value) {
+                this.tripData[key] = value;
+                console.log('Trip data updated:', this.tripData);
+            }
+
+            toggleInterest(interest, checked) {
+                if (checked) {
+                    this.tripData.interests.push(interest);
+                } else {
+                    this.tripData.interests = this.tripData.interests.filter(i => i !== interest);
+                }
+                console.log('Interests updated:', this.tripData.interests);
+            }
+
+            async generateItinerary() {
+                if (!this.validateCurrentStep()) return;
+
+                const generateBtn = document.getElementById('generateBtn');
+                const originalText = generateBtn.textContent;
+                
+                generateBtn.disabled = true;
+                generateBtn.textContent = 'Generating...';
+
+                try {
+                    const response = await fetch('/api/ai/generate-itinerary', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(this.tripData)
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        this.generatedItinerary = data.itinerary;
+                        this.displayItinerary(data.itinerary);
+                        this.showAlert('Itinerary generated successfully!', 'success');
+                    } else {
+                        throw new Error(data.message || 'Failed to generate itinerary');
+                    }
+                } catch (error) {
+                    console.error('Error generating itinerary:', error);
+                    this.showAlert('Failed to generate itinerary. Please try again.', 'error');
+                } finally {
+                    generateBtn.disabled = false;
+                    generateBtn.textContent = originalText;
+                }
+            }
+
+            displayItinerary(itinerary) {
+                const itineraryContainer = document.getElementById('itineraryContainer');
+                if (!itineraryContainer) return;
+
+                const itineraryHTML = this.createItineraryHTML(itinerary);
+                itineraryContainer.innerHTML = itineraryHTML;
+                
+                // Show itinerary section
+                const itinerarySection = document.getElementById('itinerary');
+                if (itinerarySection) {
+                    itinerarySection.classList.remove('hidden');
+                    itinerarySection.scrollIntoView({ behavior: 'smooth' });
+                }
+
+                // Add event listeners to new buttons
+                this.setupItineraryEventListeners();
+            }
+
+            createItineraryHTML(itinerary) {
+                let html = `
+                    <div class="itinerary-card">
+                        <div class="itinerary-header">
+                            <h3 class="itinerary-title">${itinerary.params.destination} Itinerary</h3>
+                            <div class="itinerary-meta">
+                                ${itinerary.params.duration} days • ${itinerary.params.groupSize} people • ₹${itinerary.params.budget.toLocaleString()} budget
+                            </div>
+                        </div>
+                        <div class="itinerary-body">
+                `;
+
+                itinerary.itinerary.days.forEach((day, index) => {
+                    html += `
+                        <div class="day-card">
+                            <div class="day-header">
+                                <h4 class="day-title">Day ${day.day}</h4>
+                                <span class="day-theme">${day.theme}</span>
+                            </div>
+                            <ul class="activity-list">
+                    `;
+
+                    day.activities.forEach(activity => {
+                        html += `
+                            <li class="activity-item">
+                                <div class="activity-time">${activity.time}</div>
+                                <div class="activity-name">${activity.activity}</div>
+                                <div class="activity-description">${activity.description}</div>
+                            </li>
+                        `;
+                    });
+
+                    html += `
+                            </ul>
+                        </div>
+                    `;
+                });
+
+                html += `
+                        </div>
+                    </div>
+                `;
+
+                return html;
+            }
+
+            setupItineraryEventListeners() {
+                // Add event listeners for itinerary-specific buttons
+                const saveBtn = document.getElementById('saveBtn');
+                const shareBtn = document.getElementById('shareBtn');
+                const bookBtn = document.getElementById('bookBtn');
+
+                if (saveBtn) saveBtn.addEventListener('click', () => this.saveItinerary());
+                if (shareBtn) shareBtn.addEventListener('click', () => this.shareItinerary());
+                if (bookBtn) bookBtn.addEventListener('click', () => this.bookItinerary());
+            }
+
+            async saveItinerary() {
+                if (!this.generatedItinerary) {
+                    this.showAlert('No itinerary to save', 'error');
+                    return;
+                }
+
+                try {
+                    const response = await fetch('/api/itineraries/save', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${localStorage.getItem('token')}`
+                        },
+                        body: JSON.stringify(this.generatedItinerary)
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        this.showAlert('Itinerary saved successfully!', 'success');
+                    } else {
+                        throw new Error(data.message || 'Failed to save itinerary');
+                    }
+                } catch (error) {
+                    console.error('Error saving itinerary:', error);
+                    this.showAlert('Failed to save itinerary. Please try again.', 'error');
+                }
+            }
+
+            async shareItinerary() {
+                if (!this.generatedItinerary) {
+                    this.showAlert('No itinerary to share', 'error');
+                    return;
+                }
+
+                try {
+                    const response = await fetch('/api/itineraries/share', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${localStorage.getItem('token')}`
+                        },
+                        body: JSON.stringify({ itineraryId: this.generatedItinerary.id })
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        // Copy share link to clipboard
+                        await navigator.clipboard.writeText(data.shareUrl);
+                        this.showAlert('Share link copied to clipboard!', 'success');
+                    } else {
+                        throw new Error(data.message || 'Failed to share itinerary');
+                    }
+                } catch (error) {
+                    console.error('Error sharing itinerary:', error);
+                    this.showAlert('Failed to share itinerary. Please try again.', 'error');
+                }
+            }
+
+            async bookItinerary() {
+                if (!this.generatedItinerary) {
+                    this.showAlert('No itinerary to book', 'error');
+                    return;
+                }
+
+                // Show booking modal
+                this.showBookingModal();
+            }
+
+            showBookingModal() {
+                const modal = document.getElementById('bookingModal');
+                if (modal) {
+                    modal.classList.remove('hidden');
+                } else {
+                    this.createBookingModal();
+                }
+            }
+
+            createBookingModal() {
+                const modalHTML = `
+                    <div id="bookingModal" class="modal-overlay">
+                        <div class="modal">
+                            <div class="modal-header">
+                                <h3 class="modal-title">Book Your Trip</h3>
+                                <button class="modal-close">&times;</button>
+                            </div>
+                            <form id="bookingForm">
+                                <div class="form-group">
+                                    <label class="form-label" for="bookingName">Full Name</label>
+                                    <input type="text" class="form-input" id="bookingName" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label" for="bookingEmail">Email</label>
+                                    <input type="email" class="form-input" id="bookingEmail" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label" for="bookingPhone">Phone</label>
+                                    <input type="tel" class="form-input" id="bookingPhone" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label" for="paymentMethod">Payment Method</label>
+                                    <select class="form-select" id="paymentMethod" required>
+                                        <option value="">Select Payment Method</option>
+                                        <option value="stripe">Credit/Debit Card</option>
+                                        <option value="razorpay">Razorpay</option>
+                                        <option value="paypal">PayPal</option>
+                                    </select>
+                                </div>
+                                <div class="flex justify-between mt-6">
+                                    <button type="button" class="btn btn-secondary" onclick="this.closest('.modal-overlay').classList.add('hidden')">Cancel</button>
+                                    <button type="submit" class="btn btn-primary">Confirm Booking</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                `;
+
+                document.body.insertAdjacentHTML('beforeend', modalHTML);
+                
+                // Add event listener for booking form
+                const bookingForm = document.getElementById('bookingForm');
+                if (bookingForm) {
+                    bookingForm.addEventListener('submit', (e) => this.handleBooking(e));
+                }
+            }
+
+            async handleBooking(e) {
+                e.preventDefault();
+                
+                const bookingData = {
+                    name: document.getElementById('bookingName').value,
+                    email: document.getElementById('bookingEmail').value,
+                    phone: document.getElementById('bookingPhone').value,
+                    paymentMethod: document.getElementById('paymentMethod').value,
+                    itinerary: this.generatedItinerary
+                };
+
+                try {
+                    const response = await fetch('/api/bookings/create', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${localStorage.getItem('token')}`
+                        },
+                        body: JSON.stringify(bookingData)
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        this.showAlert('Booking confirmed successfully!', 'success');
+                        this.closeModal();
+                    } else {
+                        throw new Error(data.message || 'Failed to create booking');
+                    }
+                } catch (error) {
+                    console.error('Error creating booking:', error);
+                    this.showAlert('Failed to create booking. Please try again.', 'error');
+                }
+            }
+
+            closeModal() {
+                const modals = document.querySelectorAll('.modal-overlay');
+                modals.forEach(modal => {
+                    modal.classList.add('hidden');
+                });
+            }
+
+            showLoginModal() {
+                const modal = document.getElementById('loginModal');
+                if (modal) {
+                    modal.classList.remove('hidden');
+                }
+            }
+
+            showRegisterModal() {
+                const modal = document.getElementById('registerModal');
+                if (modal) {
+                    modal.classList.remove('hidden');
+                }
+            }
+
+            async handleLogin(e) {
+                e.preventDefault();
+                
+                const email = document.getElementById('loginEmail').value;
+                const password = document.getElementById('loginPassword').value;
+
+                try {
+                    const response = await fetch('/api/auth/login', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ email, password })
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        localStorage.setItem('token', data.token);
+                        localStorage.setItem('userData', JSON.stringify(data.user));
+                        this.showAlert('Login successful!', 'success');
+                        this.closeModal();
+                        this.updateAuthButtons();
+                    } else {
+                        throw new Error(data.message || 'Login failed');
+                    }
+                } catch (error) {
+                    console.error('Error logging in:', error);
+                    this.showAlert('Login failed. Please check your credentials.', 'error');
+                }
+            }
+
+            async handleRegister(e) {
+                e.preventDefault();
+                
+                const name = document.getElementById('registerName').value;
+                const email = document.getElementById('registerEmail').value;
+                const password = document.getElementById('registerPassword').value;
+                const confirmPassword = document.getElementById('confirmPassword').value;
+
+                if (password !== confirmPassword) {
+                    this.showAlert('Passwords do not match', 'error');
+                    return;
+                }
+
+                try {
+                    const response = await fetch('/api/auth/register', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ 
+                            firstName: name.split(' ')[0],
+                            lastName: name.split(' ').slice(1).join(' '),
+                            email, 
+                            password 
+                        })
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        localStorage.setItem('token', data.token);
+                        localStorage.setItem('userData', JSON.stringify(data.user));
+                        this.showAlert('Registration successful!', 'success');
+                        this.closeModal();
+                        this.updateAuthButtons();
+                    } else {
+                        throw new Error(data.message || 'Registration failed');
+                    }
+                } catch (error) {
+                    console.error('Error registering:', error);
+                    this.showAlert('Registration failed. Please try again.', 'error');
+                }
+            }
+
+            async logout() {
+                localStorage.removeItem('token');
+                localStorage.removeItem('userData');
+                this.showAlert('Logged out successfully', 'success');
+                this.updateAuthButtons();
+            }
+
+            updateAuthButtons() {
+                const token = localStorage.getItem('token');
+                const loginBtn = document.getElementById('loginBtn');
+                const registerBtn = document.getElementById('registerBtn');
+                const logoutBtn = document.getElementById('logoutBtn');
+
+                if (token) {
+                    if (loginBtn) loginBtn.classList.add('hidden');
+                    if (registerBtn) registerBtn.classList.add('hidden');
+                    if (logoutBtn) logoutBtn.classList.remove('hidden');
+                } else {
+                    if (loginBtn) loginBtn.classList.remove('hidden');
+                    if (registerBtn) registerBtn.classList.remove('hidden');
+                    if (logoutBtn) logoutBtn.classList.add('hidden');
+                }
+            }
+
+            showAlert(message, type = 'info') {
+                const alertContainer = document.getElementById('alertContainer');
+                if (!alertContainer) return;
+
+                const alert = document.createElement('div');
+                alert.className = `alert alert-${type}`;
+                alert.textContent = message;
+
+                alertContainer.appendChild(alert);
+
+                setTimeout(() => {
+                    alert.remove();
+                }, 5000);
+            }
+
+            validateForm(form) {
+                const inputs = form.querySelectorAll('input[required], select[required], textarea[required]');
+                let isValid = true;
+
+                inputs.forEach(input => {
+                    if (!input.value.trim()) {
+                        input.classList.add('error');
+                        isValid = false;
+                    } else {
+                        input.classList.remove('error');
+                    }
+                });
+
+                return isValid;
+            }
+        }
+
+        // Initialize the app when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            window.tripPlannerApp = new TripPlannerApp();
+        });
+
+        // Export for use in other scripts
+        if (typeof module !== 'undefined' && module.exports) {
+            module.exports = TripPlannerApp;
+        }
+    </script>
+</body>
+</html>
